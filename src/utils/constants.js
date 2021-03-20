@@ -1,1 +1,3 @@
-export const ALL_MOVIES_PAGE = 'https://www.cinespalafox.com/cartelera-cines-aragonia.html';
+export const BASE_URL = 'https://www.cinespalafox.com';
+
+export const ALL_MOVIES_PAGE = `${BASE_URL}/cartelera.html`;

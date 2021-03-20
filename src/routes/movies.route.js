@@ -3,23 +3,23 @@ import { fetchMoviesList, fetchMovieInfo } from '../services/movies.service.js';
 
 const router = express.Router();
 
-router.get('/movies/all', async (_req, res) => {
+router.get('/movies', async (_req, res) => {
   try {
     const movies = await fetchMoviesList();
 
     res.json(movies);
   } catch (error) {
-    res.status(500).send('Could not access page!');
+    res.status(500).send('Server error!');
   }
 });
 
-router.get('/movie/:pageUrl', async (req, res) => {
+router.get('/movie/:movieKey', async (req, res) => {
   try {
-    const movies = await fetchMovieInfo(req.params.pageUrl);
+    const movies = await fetchMovieInfo(req.params.movieKey);
 
     res.json(movies);
   } catch (error) {
-    res.status(500).send('Could not access page!');
+    res.status(500).send('Server error!');
   }
 });
 
