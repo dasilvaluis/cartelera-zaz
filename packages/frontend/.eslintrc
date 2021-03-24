@@ -1,0 +1,31 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "eslint:recommended",
+    "airbnb"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true,
+    "browser": true,
+    "jest": true
+  },
+  "rules": {
+    "import/prefer-default-export": [0],
+    "array-bracket-spacing": [2, "always"],
+    "template-curly-spacing": [2, "always"],
+    "object-curly-newline": [2, { "multiline": true, "consistent": true }],
+    "operator-linebreak": [2, "after", { "overrides": { "?": "before", ":": "before" } }],
+    "react/jsx-curly-spacing": [2, { "when": "always", "children": true }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+  }
+}

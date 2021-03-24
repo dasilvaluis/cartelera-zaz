@@ -1,11 +1,11 @@
 import express from 'express';
-import { fetchMoviesList, fetchMovieInfo } from '../services/movies.service.js';
+import { fetchMovies, fetchMovie } from '../services/movies.service.js';
 
 const router = express.Router();
 
 router.get('/movies', async (_req, res) => {
   try {
-    const movies = await fetchMoviesList();
+    const movies = await fetchMovies();
 
     res.json(movies);
   } catch (error) {
@@ -15,11 +15,11 @@ router.get('/movies', async (_req, res) => {
 
 router.get('/movie/:movieKey', async (req, res) => {
   try {
-    const movies = await fetchMovieInfo(req.params.movieKey);
+    const movie = await fetchMovie(req.params.movieKey);
 
-    res.json(movies);
+    res.json(movie);
   } catch (error) {
-    res.status(500).send('Server error!');
+    res.status(500).send(error);
   }
 });
 
