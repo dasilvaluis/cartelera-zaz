@@ -4,6 +4,7 @@ import {
   isVOS, isATMOS, getMovieUrl, extractMovieKey, extractHour,
 } from '../utils/movies-helpers.js';
 import dom from '../utils/dom-selectors.js';
+import { NOT_FOUND } from '../utils/error-types.js';
 
 /**
  * @param {puppeteer.Page}
@@ -67,6 +68,12 @@ async function collectSessions(page) {
  * @returns {Movie} movie - All movie data
  */
 async function collectMovieData(page) {
+  const movieContent = await page.$(dom.movieSingle.movieContent);
+
+  if (movieContent === null) {
+    throw Error(NOT_FOUND);
+  }
+
   const title = await getDomFieldValue(
     page,
     dom.movieSingle.movieTitle,
@@ -172,6 +179,5 @@ export async function fetchMovie(movieKey) {
   return {
     ...movieData,
     pageUrl,
-    key: movieKey,
   };
 }

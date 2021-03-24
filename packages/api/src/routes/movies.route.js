@@ -1,5 +1,6 @@
 import express from 'express';
 import { fetchMovies, fetchMovie } from '../services/movies.service.js';
+import { NOT_FOUND } from '../utils/error-types.js';
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ router.get('/movies', async (_req, res) => {
 
     res.json(movies);
   } catch (error) {
-    res.status(500).send('Server error!');
+    res.status(500).send('Server error');
   }
 });
 
@@ -19,7 +20,11 @@ router.get('/movie/:movieKey', async (req, res) => {
 
     res.json(movie);
   } catch (error) {
-    res.status(500).send(error);
+    if (error.message === NOT_FOUND) {
+      res.status(404).send('Movie not found');
+    } else {
+      res.status(500).send(error.message);
+    }
   }
 });
 
