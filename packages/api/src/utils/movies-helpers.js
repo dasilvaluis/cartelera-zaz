@@ -48,3 +48,14 @@ export function extractHour(expression) {
 
   return Array.isArray(match) ? match[0] : match;
 }
+
+/**
+ * Reverse a date expression seperated by '/'
+ * ex. 13/01/1991 -> 1991/01/13
+ *
+ * @param {String} date Date formated with '/'
+ * @returns {String} Reversed date
+ */
+export function reverseDate(date) {
+  return date.split('/').reverse().join('/');
+}

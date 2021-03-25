@@ -10,9 +10,8 @@
 /**
  * @typedef Session
  * @type {object}
- * @property {String} date - Session day
  * @property {String} location - Cinema
- * @property {String} hour - Session hour
+ * @property {String} date - Session date (ISO time)
  * @property {String} isVos - Is in in original language
  * @property {String} isAtmos - Is in ATMOS
  */

@@ -4,7 +4,7 @@ import { NOT_FOUND } from '../utils/error-types.js';
 
 const router = express.Router();
 
-router.get('/movies', async (_req, res) => {
+router.get('/api/movies', async (_req, res) => {
   try {
     const movies = await fetchMovies();
 
@@ -14,7 +14,7 @@ router.get('/movies', async (_req, res) => {
   }
 });
 
-router.get('/movie/:movieKey', async (req, res) => {
+router.get('/api/movie/:movieKey', async (req, res) => {
   try {
     const movie = await fetchMovie(req.params.movieKey);
 

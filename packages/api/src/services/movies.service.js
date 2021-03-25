@@ -1,10 +1,16 @@
 import puppeteer from 'puppeteer';
-import { ALL_MOVIES_PAGE } from '../utils/constants.js';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc.js';
+import timezone from 'dayjs/plugin/timezone.js';
+import { ALL_MOVIES_PAGE, TIMEZONE } from '../utils/constants.js';
 import {
-  isVOS, isATMOS, getMovieUrl, extractMovieKey, extractHour,
+  isVOS, isATMOS, getMovieUrl, extractMovieKey, extractHour, reverseDate,
 } from '../utils/movies-helpers.js';
 import dom from '../utils/dom-selectors.js';
 import { NOT_FOUND } from '../utils/error-types.js';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 /**
  * @param {puppeteer.Page}
@@ -35,13 +41,13 @@ async function collectSessions(page) {
     const sessionsPromises = sessionHandles.map(async (sessionHandle) => {
       const data = await sessionHandle.evaluate((domEl) => ({
         hourRaw: domEl.innerHTML,
-        date: domEl.parentElement.parentElement.previousSibling.innerHTML,
         location: domEl.parentElement.parentElement.parentElement.parentElement.parentElement
           .firstElementChild.innerHTML,
+        dayRaw: domEl.parentElement.parentElement.previousSibling.innerHTML,
       }))
-        .then(({ hourRaw, ...result }) => ({
+        .then(({ hourRaw, dayRaw, ...result }) => ({
           ...result,
-          hour: extractHour(hourRaw),
+          date: dayjs.tz(`${reverseDate(dayRaw)} ${extractHour(hourRaw)}`, TIMEZONE),
           isVos: isVOS(hourRaw),
           isAtmos: isATMOS(hourRaw),
         }))
