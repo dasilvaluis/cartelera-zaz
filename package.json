@@ -1,9 +1,10 @@
 {
   "name": "zaragoza-cartelera-monorepo",
   "private": true,
-  "devDependencies": {
-    "lerna": "4.0.0"
+  "engines": {
+    "node": "~14"
   },
+  "author": "luism-s",
   "scripts": {
     "setup": "lerna bootstrap --no-ci",
     "setup:ci": "lerna bootstrap --ci",
@@ -12,5 +13,13 @@
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream",
     "test": "lerna run test --stream"
-  }
+  },
+  "devDependencies": {
+    "lerna": "4.0.0"
+  },
+  "keywords": [
+    "zaragoza",
+    "cinema",
+    "movies"
+  ]
 }
