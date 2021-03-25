@@ -6,7 +6,7 @@ import { ALL_MOVIES_PAGE, TIMEZONE } from '../utils/constants.js';
 import {
   isVOS, isATMOS, getMovieUrl, extractMovieKey, extractHour, reverseDate,
 } from '../utils/movies-helpers.js';
-import dom from '../utils/dom-selectors.js';
+import dom, { evaluateMovieListElement, evaluateMovieSession } from '../utils/dom-selectors.js';
 import { NOT_FOUND } from '../utils/error-types.js';
 
 dayjs.extend(utc);
@@ -39,12 +39,7 @@ async function collectSessions(page) {
 
   if (sessionHandles) {
     const sessionsPromises = sessionHandles.map(async (sessionHandle) => {
-      const data = await sessionHandle.evaluate((domEl) => ({
-        hourRaw: domEl.innerHTML,
-        location: domEl.parentElement.parentElement.parentElement.parentElement.parentElement
-          .firstElementChild.innerHTML,
-        dayRaw: domEl.parentElement.parentElement.previousSibling.innerHTML,
-      }))
+      const data = await sessionHandle.evaluate(evaluateMovieSession)
         .then(({ hourRaw, dayRaw, ...result }) => ({
           ...result,
           date: dayjs.tz(`${reverseDate(dayRaw)} ${extractHour(hourRaw)}`, TIMEZONE),
@@ -116,11 +111,7 @@ async function collectMovies(page) {
   }
 
   const moviesPromises = moviesElements.map(async (movieHandle) => {
-    const data = await movieHandle.evaluate((domEl) => ({
-      pageUrl: domEl.href || null,
-      title: domEl.title || null,
-      poster: (domEl.firstElementChild && domEl.firstElementChild.src) || null,
-    }))
+    const data = await movieHandle.evaluate(evaluateMovieListElement)
       .then((result) => ({
         ...result,
         key: extractMovieKey(result.pageUrl),
