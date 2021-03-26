@@ -10,7 +10,7 @@ router.get('/api/movies', async (_req, res) => {
 
     res.json(movies);
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).send(error.message);
   }
 });
 
@@ -23,7 +23,7 @@ router.get('/api/movie/:movieKey', async (req, res) => {
     if (error.message === NOT_FOUND) {
       res.status(404).send('Movie not found');
     } else {
-      res.status(500).json(error);
+      res.status(500).send(error.message);
     }
   }
 });
