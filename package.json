@@ -13,7 +13,7 @@
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream",
     "test": "lerna run test --stream",
-    "postinstall": "npm run setup:ci"
+    "heroku-prebuild": "npm run setup:ci && npm run build"
   },
   "devDependencies": {
     "lerna": "4.0.0"
