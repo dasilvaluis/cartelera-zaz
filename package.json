@@ -10,9 +10,10 @@
     "setup:ci": "lerna bootstrap --ci",
     "start": "lerna run start --parallel",
     "clean": "lerna run clean --stream",
-    "build": "npm run setup:ci && lerna run build --stream",
+    "build": "lerna run build --stream",
     "lint": "lerna run lint --stream",
-    "test": "lerna run test --stream"
+    "test": "lerna run test --stream",
+    "heroku-prebuild": "npm run setup:ci"
   },
   "devDependencies": {
     "lerna": "4.0.0"
