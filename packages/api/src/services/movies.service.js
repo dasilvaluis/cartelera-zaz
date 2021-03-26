@@ -1,4 +1,3 @@
-import puppeteer from 'puppeteer';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
@@ -8,6 +7,7 @@ import {
 } from '../utils/movies-helpers.js';
 import dom, { evaluateMovieListElement, evaluateMovieSession } from '../utils/dom-selectors.js';
 import { NOT_FOUND } from '../utils/error-types.js';
+import { getBrowser } from '../utils/puppeteer.js';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -133,7 +133,7 @@ async function collectMovies(page) {
  * @returns {Array.<ArchiveMovieInfo>|null} List of movies. Null if service fails.
  */
 export async function fetchMovies() {
-  const browser = await puppeteer.launch();
+  const browser = await getBrowser();
   const page = await browser.newPage();
   await page.goto(ALL_MOVIES_PAGE);
 
@@ -165,7 +165,7 @@ export async function fetchMovies() {
  */
 export async function fetchMovie(movieKey) {
   const pageUrl = getMovieUrl(movieKey);
-  const browser = await puppeteer.launch();
+  const browser = await getBrowser();
   const page = await browser.newPage();
   await page.goto(pageUrl);
 
