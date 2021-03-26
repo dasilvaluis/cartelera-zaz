@@ -7,7 +7,8 @@ import {
 } from '../utils/movies-helpers.js';
 import dom, { evaluateMovieListElement, evaluateMovieSession } from '../utils/dom-selectors.js';
 import { NOT_FOUND } from '../utils/error-types.js';
-import { getBrowser } from '../utils/puppeteer.js';
+import { startNewBrowser } from '../utils/puppeteer.js';
+import { iterateRecursiveAsync } from '../utils/helpers.js';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -133,27 +134,22 @@ async function collectMovies(page) {
  * @returns {Array.<ArchiveMovieInfo>|null} List of movies. Null if service fails.
  */
 export async function fetchMovies() {
-  const browser = await getBrowser();
-  const page = await browser.newPage();
+  const { page, closeBrowser } = await startNewBrowser();
   await page.goto(ALL_MOVIES_PAGE);
 
   const movies = await collectMovies(page);
 
-  const withSessions = await Promise.all(movies.map(async (movie) => {
-    let sessions = null;
+  const withSessions = await iterateRecursiveAsync(movies, async (acc, currMovie) => {
+    await page.goto(currMovie.pageUrl);
+    const sessions = await collectSessions(page);
 
-    if (movie.pageUrl) {
-      await page.goto(movie.pageUrl);
-      sessions = await collectSessions(page);
-    }
+    return [
+      ...acc,
+      { ...currMovie, sessions },
+    ];
+  }, []);
 
-    return {
-      ...movie,
-      sessions,
-    };
-  }));
-
-  await browser.close();
+  await closeBrowser();
 
   return withSessions;
 }
@@ -164,14 +160,13 @@ export async function fetchMovies() {
  * @returns {Movie} movie - All movie data
  */
 export async function fetchMovie(movieKey) {
+  const { page, closeBrowser } = await startNewBrowser();
   const pageUrl = getMovieUrl(movieKey);
-  const browser = await getBrowser();
-  const page = await browser.newPage();
   await page.goto(pageUrl);
 
   const movieData = await collectMovieData(page);
 
-  await browser.close();
+  await closeBrowser();
 
   return {
     ...movieData,

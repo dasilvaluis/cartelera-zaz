@@ -1,10 +1,16 @@
 import puppeteer from 'puppeteer';
 
-export async function getBrowser() {
+export async function startNewBrowser() {
   const browser = await puppeteer.launch({
     headless: true,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
-  return browser;
+  async function closeBrowser() {
+    await browser.close();
+  }
+
+  const page = await browser.newPage();
+
+  return { browser, page, closeBrowser };
 }
