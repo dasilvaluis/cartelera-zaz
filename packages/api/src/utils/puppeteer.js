@@ -10,7 +10,7 @@ export async function startNewBrowser() {
     await browser.close();
   }
 
-  const page = await browser.newPage();
+  const browserPage = await browser.newPage();
 
-  return { browser, page, closeBrowser };
+  return { browser, browserPage, closeBrowser };
 }

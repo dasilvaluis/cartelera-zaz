@@ -4,11 +4,17 @@ import { NOT_FOUND } from '../utils/error-types.js';
 
 const router = express.Router();
 
-router.get('/api/movies', async (_req, res) => {
-  try {
-    const movies = await fetchMovies();
+router.get('/api/movies', async (req, res) => {
+  const { showSessions, page, limit } = req.query;
 
-    res.json(movies);
+  try {
+    const moviesResult = await fetchMovies({
+      showSessions,
+      page,
+      limit,
+    });
+
+    res.json(moviesResult);
   } catch (error) {
     res.status(500).send(error.message);
   }
