@@ -8,8 +8,8 @@ const router = express.Router();
 router.get('/api/movies', async (req, res) => {
   const {
     showSessions = false,
-    page = DEFAULT_PAGE_LIMIT,
-    limit = DEFAULT_PAGE,
+    page = DEFAULT_PAGE,
+    limit = DEFAULT_PAGE_LIMIT,
   } = req.query;
 
   try {
