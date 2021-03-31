@@ -1,11 +1,16 @@
 import express from 'express';
 import { fetchMovies, fetchMovie } from '../services/movies.service.js';
+import { DEFAULT_PAGE, DEFAULT_PAGE_LIMIT } from '../utils/constants.js';
 import { NOT_FOUND } from '../utils/error-types.js';
 
 const router = express.Router();
 
 router.get('/api/movies', async (req, res) => {
-  const { showSessions, page, limit } = req.query;
+  const {
+    showSessions = false,
+    page = DEFAULT_PAGE_LIMIT,
+    limit = DEFAULT_PAGE,
+  } = req.query;
 
   try {
     const moviesResult = await fetchMovies({

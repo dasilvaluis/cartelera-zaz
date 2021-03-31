@@ -2,15 +2,14 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
 import {
-  ALL_MOVIES_PAGE, DEFAULT_PAGE, DEFAULT_PAGE_LIMIT, TIMEZONE,
+  ALL_MOVIES_PAGE, TIMEZONE,
 } from '../utils/constants.js';
 import {
   isVOS, isATMOS, getMovieUrl, extractMovieKey, extractHour, reverseDate,
 } from '../utils/movies-helpers.js';
 import dom, { evaluateMovieListElement, evaluateMovieSession } from '../utils/dom-selectors.js';
 import { NOT_FOUND } from '../utils/error-types.js';
-import { startNewBrowser } from '../utils/puppeteer.js';
-import { iterateRecursiveAsync } from '../utils/helpers.js';
+import { startNewBrowser, openNewPage } from '../utils/puppeteer.js';
 import { paginateArray } from '../utils/pagination.js';
 
 dayjs.extend(utc);
@@ -90,6 +89,7 @@ async function collectMovieData(page) {
     dom.movieSingle.moviePoster,
     (el) => el.src || null,
   );
+
   const sessions = await collectSessions(page);
 
   return {
@@ -99,18 +99,18 @@ async function collectMovieData(page) {
   };
 }
 
-async function addSessionsToMovies(movies, browserPage) {
-  async function addSessionstoMovies(moviesAcc, currMovie) {
-    await browserPage.goto(currMovie.pageUrl);
-    const sessions = await collectSessions(browserPage);
+async function addSessionsToMovie(browser) {
+  return async (movie) => {
+    const { page, closePage } = await openNewPage(browser);
 
-    return [
-      ...moviesAcc,
-      { ...currMovie, sessions },
-    ];
-  }
+    await page.goto(movie.pageUrl);
 
-  return iterateRecursiveAsync(movies, addSessionstoMovies, []);
+    const sessions = await collectSessions(page);
+
+    await closePage();
+
+    return { ...movie, sessions };
+  };
 }
 
 /**
@@ -122,11 +122,11 @@ async function addSessionsToMovies(movies, browserPage) {
  * @param {Number} parameters.page Page number.
  */
 export async function fetchMovies({
-  showSessions = false,
-  limit = DEFAULT_PAGE_LIMIT,
-  page = DEFAULT_PAGE,
+  showSessions,
+  limit,
+  page,
 }) {
-  const { browserPage, closeBrowser } = await startNewBrowser();
+  const { browser, browserPage, closeBrowser } = await startNewBrowser();
   await browserPage.goto(ALL_MOVIES_PAGE);
 
   const moviesElements = await browserPage.$$(dom.moviesArchive.moviesList)
@@ -156,14 +156,14 @@ export async function fetchMovies({
 
   const movies = await Promise.all(pagedMovies.map(extractMovieData));
 
-  const moviesWithSessions = showSessions
-    ? await addSessionsToMovies(movies, browserPage)
+  const movieWSessions = showSessions
+    ? await Promise.all(movies.map(await addSessionsToMovie(browser)))
     : movies;
 
   await closeBrowser();
 
   return {
-    content: moviesWithSessions,
+    content: movieWSessions,
     pagination: {
       page,
       total,
