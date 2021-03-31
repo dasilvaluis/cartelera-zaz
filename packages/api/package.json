@@ -1,5 +1,5 @@
 {
-  "name": "zaragoza-cartelera-api",
+  "name": "cartelera-zaz-api",
   "version": "0.0.0",
   "description": "Shows current movies in the original language in Zaragoza, Spain",
   "main": "src/index.js",

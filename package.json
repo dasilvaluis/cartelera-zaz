@@ -1,5 +1,5 @@
 {
-  "name": "zaragoza-cartelera-monorepo",
+  "name": "cartelera-zaz-monorepo",
   "private": true,
   "engines": {
     "node": "~14"
