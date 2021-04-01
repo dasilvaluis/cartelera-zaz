@@ -5,7 +5,7 @@ import {
   ALL_MOVIES_PAGE, TIMEZONE,
 } from '../utils/constants.js';
 import {
-  isVOS, isATMOS, getMovieUrl, extractMovieKey, extractHour, reverseDate,
+  isVOS, isATMOS, getMovieUrl, extractMovieId, extractHour, reverseDate,
 } from '../utils/movies-helpers.js';
 import dom, { evaluateMovieListElement, evaluateMovieSession } from '../utils/dom-selectors.js';
 import { NOT_FOUND } from '../utils/error-types.js';
@@ -148,7 +148,7 @@ export async function fetchMovies({
 
     const movieData = {
       ...data,
-      key: extractMovieKey(data.pageUrl),
+      id: extractMovieId(data.pageUrl),
     };
 
     return movieData;
@@ -178,9 +178,9 @@ export async function fetchMovies({
  * @param {String} pageUrl - Movie Page Url
  * @returns {Movie} movie - All movie data
  */
-export async function fetchMovie(movieKey) {
+export async function fetchMovie(movieId) {
   const { browserPage, closeBrowser } = await startNewBrowser();
-  const pageUrl = getMovieUrl(movieKey);
+  const pageUrl = getMovieUrl(movieId);
   await browserPage.goto(pageUrl);
 
   const movieData = await collectMovieData(browserPage);

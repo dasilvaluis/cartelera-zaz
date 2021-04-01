@@ -18,6 +18,7 @@
   "author": "luism-s",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
     "dayjs": "1.10.4",
     "dotenv": "8.2.0",
     "express": "4.17.1",

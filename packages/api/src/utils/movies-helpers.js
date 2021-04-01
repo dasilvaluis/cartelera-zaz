@@ -31,7 +31,7 @@ export function isATMOS(expression) {
  *
  * @param {String} expression
  */
-export function extractMovieKey(expression) {
+export function extractMovieId(expression) {
   const match = expression.match(/[\w-]+\.html/);
 
   return Array.isArray(match) ? match[0].split('.')[0] : match;

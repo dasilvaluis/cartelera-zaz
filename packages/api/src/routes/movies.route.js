@@ -25,9 +25,9 @@ router.get('/api/movies', async (req, res) => {
   }
 });
 
-router.get('/api/movie/:movieKey', async (req, res) => {
+router.get('/api/movies/:movieId', async (req, res) => {
   try {
-    const movie = await fetchMovie(req.params.movieKey);
+    const movie = await fetchMovie(req.params.movieId);
 
     res.json(movie);
   } catch (error) {

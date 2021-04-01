@@ -1,0 +1,12 @@
+@import "~bootstrap/scss/bootstrap";
+
+.app-container {
+  width: 75%;
+  min-width: 400px;
+  max-width: 1024px;
+  margin: 3rem auto;
+}
+
+.app-header {
+  margin-bottom: 1rem;
+}
