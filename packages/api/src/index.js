@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import moviesRoutes from './routes/movies.route.js';
+import moviesRoutes from './controllers/movies.controller.js';
 import queryParser from './middleware/query-parser.js';
 
 dotenv.config();

@@ -129,14 +129,14 @@ export async function fetchMovies({
   const { browser, browserPage, closeBrowser } = await startNewBrowser();
   await browserPage.goto(ALL_MOVIES_PAGE);
 
-  const moviesElements = await browserPage.$$(dom.moviesArchive.moviesList)
+  const allMoviesElements = await browserPage.$$(dom.moviesArchive.moviesList)
     .catch(() => null);
 
   const {
     total,
     pageCount,
-    elementsSlice: pagedMovies,
-  } = paginateArray(moviesElements, limit, page);
+    pagedElements: moviesElements,
+  } = paginateArray(allMoviesElements, limit, page);
 
   async function extractMovieData(movieHandle) {
     const data = await movieHandle.evaluate(evaluateMovieListElement)
@@ -154,7 +154,7 @@ export async function fetchMovies({
     return movieData;
   }
 
-  const movies = await Promise.all(pagedMovies.map(extractMovieData));
+  const movies = await Promise.all(moviesElements.map(extractMovieData));
 
   const movieWSessions = showSessions
     ? await Promise.all(movies.map(await addSessionsToMovie(browser)))

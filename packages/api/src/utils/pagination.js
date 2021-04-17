@@ -11,11 +11,11 @@ const MIN_PAGE = 0;
 export function paginateArray(elements, limit, page) {
   const total = elements.length;
   const pageCount = Math.ceil(total / Math.max(limit, MIN_PAGE_LIMIT));
-  const elementsSlice = elements.slice(limit * Math.max(page, MIN_PAGE)).slice(0, limit);
+  const pagedElements = elements.slice(limit * Math.max(page, MIN_PAGE)).slice(0, limit);
 
   return {
     total,
     pageCount,
-    elementsSlice,
+    pagedElements,
   };
 }
