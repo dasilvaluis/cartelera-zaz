@@ -23,7 +23,11 @@ async function collectMoviesData(movieHandlers) {
     try {
       const data = await movieHandle.evaluate(evaluateMovieListElement);
 
-      return { ...data, id: extractMovieId(data.pageUrl) };
+      return {
+        ...data,
+        id: extractMovieId(data.pageUrl),
+        title: data.title.toLowerCase(),
+      };
     } catch (error) {
       console.error(error);
 

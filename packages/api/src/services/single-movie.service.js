@@ -41,6 +41,7 @@ async function collectMovieData(page) {
 
   const title = await page.$(dom.movieSingle.movieTitle)
     .then((handle) => handle.evaluate((el) => el.innerHTML))
+    .then((rawTitle) => rawTitle.toLowerCase())
     .catch((error) => {
       console.error(error);
 
