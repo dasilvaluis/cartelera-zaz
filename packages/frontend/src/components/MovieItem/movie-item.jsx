@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Card } from 'react-bootstrap';
+import './movie-item.scss';
 
 export function MovieItem({
   title,
@@ -7,13 +9,15 @@ export function MovieItem({
   pageUrl,
 }) {
   return (
-    <div className="d-flex">
-      <img width="100px" src={ poster } alt={ title } />
-      <div className="px-3">
-        <h6>{ title }</h6>
-        <a href={ pageUrl } target="_blank" rel="noreferrer">Page</a>
-      </div>
-    </div>
+    <Card className="movie-item">
+      <Card.Img src={ poster } />
+      <Card.Body>
+        <Card.Title className="movie-item__title">{ title }</Card.Title>
+        <Card.Text>
+          <a href={ pageUrl } target="_blank" rel="noreferrer">Page</a>
+        </Card.Text>
+      </Card.Body>
+    </Card>
   );
 }
 
