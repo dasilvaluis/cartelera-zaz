@@ -1,5 +1,6 @@
 import express from 'express';
-import { fetchMovies, fetchMovie } from '../services/movies.service.js';
+import SingleMovieService from '../services/single-movie.service.js';
+import AllMoviesService from '../services/all-movies.service.js';
 import { DEFAULT_PAGE, DEFAULT_PAGE_LIMIT } from '../utils/constants.js';
 import { NOT_FOUND } from '../utils/error-types.js';
 
@@ -13,8 +14,11 @@ router.get('/api/v1/movies', async (req, res) => {
   } = req.query;
 
   try {
+    const fetchMovies = showSessions
+      ? AllMoviesService.fetchMoviesWithSessions
+      : AllMoviesService.fetchMovies;
+
     const moviesResult = await fetchMovies({
-      showSessions,
       page,
       limit,
     });
@@ -27,7 +31,7 @@ router.get('/api/v1/movies', async (req, res) => {
 
 router.get('/api/v1/movies/:movieId', async (req, res) => {
   try {
-    const movie = await fetchMovie(req.params.movieId);
+    const movie = await SingleMovieService.fetchMovie(req.params.movieId);
 
     res.json(movie);
   } catch (error) {
