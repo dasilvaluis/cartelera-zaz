@@ -2,7 +2,8 @@ import axios from 'axios';
 import { MOVIES_API_URL } from '../utils/config';
 
 const routes = {
-  all: '/movies',
+  onScreen: '/movies',
+  upcoming: '/movies/upcoming',
   singleMovie: (movieKey) => `/movies/${ movieKey }`,
 };
 
@@ -10,8 +11,10 @@ export async function getMovies({
   page = 0,
   limit = 10,
   showSessions = false,
+  upcoming = false,
 }) {
-  const { data } = await axios.get(`${ MOVIES_API_URL }${ routes.all }`, {
+  const moviesRoute = upcoming ? routes.upcoming : routes.onScreen;
+  const { data } = await axios.get(`${ MOVIES_API_URL }/v1${ moviesRoute }`, {
     params: { page, limit, showSessions },
   });
 
@@ -19,7 +22,7 @@ export async function getMovies({
 }
 
 export async function getMovie(movieKey) {
-  const { data } = await axios.get(`${ MOVIES_API_URL }${ routes.singleMovie(movieKey) }`);
+  const { data } = await axios.get(`${ MOVIES_API_URL }/v1${ routes.singleMovie(movieKey) }`);
 
   return data;
 }
