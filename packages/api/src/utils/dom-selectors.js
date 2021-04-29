@@ -1,6 +1,6 @@
 export default {
   moviesArchive: {
-    moviesList: '.view-Cartelera > .view-content > .views-row a',
+    moviesList: 'main > .container > .view > .view-content > .views-row a',
   },
   movieSingle: {
     movieContent: 'main > .container > #pelicula',
