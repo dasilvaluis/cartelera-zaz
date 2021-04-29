@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc.js';
 import timezone from 'dayjs/plugin/timezone.js';
-import { ALL_MOVIES_PAGE } from '../utils/constants.js';
 import { extractMovieId } from '../utils/movies-helpers.js';
 import dom from '../utils/dom-selectors.js';
 import { startNewBrowser, openNewPage } from '../utils/puppeteer.js';
@@ -38,17 +37,18 @@ async function collectMoviesData(movieHandlers) {
 /**
  * Fetches a list of all available movies. Returns null if it fails
  *
- * @param {Object} parameters Query parameters.
- * @param {Number} parameters.limit Limit of results per page.
- * @param {Number} parameters.page Page number.
+ * @param {String} moviesArchivePage Movies page
+ * @param {Object} parameters Query parameters
+ * @param {Number} parameters.limit Limit of results per page
+ * @param {Number} parameters.page Page number
  */
-async function fetchMovies({
+async function fetchMovies(moviesArchivePage, {
   limit,
   page,
 }) {
   const { browser, closeBrowser } = await startNewBrowser();
   const { page: browserPage } = await openNewPage(browser);
-  await browserPage.goto(ALL_MOVIES_PAGE);
+  await browserPage.goto(moviesArchivePage);
 
   const allMoviesHandlers = await browserPage.$$(dom.moviesArchive.moviesList)
     .catch(() => null);
@@ -75,16 +75,17 @@ async function fetchMovies({
 /**
  * Fetches a list of all available movies with sessions. Returns null if it fails.
  *
- * @param {Object} parameters Query parameters.
- * @param {Number} parameters.limit Limit of results per page.
- * @param {Number} parameters.page Page number.
+ * @param {String} moviesArchivePage Movies page
+ * @param {Object} parameters Query parameters
+ * @param {Number} parameters.limit Limit of results per page
+ * @param {Number} parameters.page Page number
  */
-async function fetchMoviesWithSessions({
+async function fetchMoviesWithSessions(moviesArchivePage, {
   limit,
   page,
 }) {
   const { browser, closeBrowser } = await startNewBrowser();
-  const { content: movies, ...rest } = fetchMovies({ limit, page });
+  const { content: movies, ...rest } = fetchMovies(moviesArchivePage, { limit, page });
 
   const movieWSessionsPromises = movies.map(async (movie) => {
     const { page: browserPage, closePage } = await openNewPage(browser);
