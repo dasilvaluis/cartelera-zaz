@@ -16,11 +16,11 @@ router.get('/api/v1/movies', async (req, res) => {
   } = req.query;
 
   try {
-    const fetchMovies = showSessions
-      ? AllMoviesService.fetchMoviesWithSessions
-      : AllMoviesService.fetchMovies;
+    const { fetchMoviesWithSessions, fetchMovies } = AllMoviesService(SingleMovieService());
 
-    const moviesResult = await fetchMovies(
+    const fetchAllMovies = showSessions ? fetchMoviesWithSessions : fetchMovies;
+
+    const moviesResult = await fetchAllMovies(
       ALL_MOVIES_PAGE,
       { page, limit },
     );
@@ -39,11 +39,11 @@ router.get('/api/v1/movies/upcoming', async (req, res) => {
   } = req.query;
 
   try {
-    const fetchMovies = showSessions
-      ? AllMoviesService.fetchMoviesWithSessions
-      : AllMoviesService.fetchMovies;
+    const { fetchMoviesWithSessions, fetchMovies } = AllMoviesService(SingleMovieService());
 
-    const moviesResult = await fetchMovies(
+    const fetchAllMovies = showSessions ? fetchMoviesWithSessions : fetchMovies;
+
+    const moviesResult = await fetchAllMovies(
       UPCOMING_MOVIES_PAGE,
       { page, limit },
     );
@@ -56,7 +56,7 @@ router.get('/api/v1/movies/upcoming', async (req, res) => {
 
 router.get('/api/v1/movies/:movieId', async (req, res) => {
   try {
-    const movie = await SingleMovieService.fetchMovie(req.params.movieId);
+    const movie = await SingleMovieService().fetchMovie(req.params.movieId);
 
     res.json(movie);
   } catch (error) {
