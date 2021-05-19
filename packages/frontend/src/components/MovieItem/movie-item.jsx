@@ -7,7 +7,10 @@ export function MovieItem({
   title,
   poster,
   pageUrl,
+  sessions,
 }) {
+  const a = sessions.length;
+
   return (
     <Card className="movie-item">
       <Card.Img src={ poster } />
@@ -21,8 +24,13 @@ export function MovieItem({
   );
 }
 
+MovieItem.defaultProps = {
+  sessions: [],
+};
+
 MovieItem.propTypes = {
   title: PropTypes.string.isRequired,
   poster: PropTypes.string.isRequired,
   pageUrl: PropTypes.string.isRequired,
+  sessions: PropTypes.arrayOf(PropTypes.object),
 };

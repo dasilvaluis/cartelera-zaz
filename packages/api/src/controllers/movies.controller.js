@@ -16,7 +16,7 @@ router.get('/api/v1/movies', async (req, res) => {
   } = req.query;
 
   try {
-    const { fetchMoviesWithSessions, fetchMovies } = AllMoviesService(SingleMovieService());
+    const { fetchMoviesWithSessions, fetchMovies } = AllMoviesService(SingleMovieService);
 
     const fetchAllMovies = showSessions ? fetchMoviesWithSessions : fetchMovies;
 
@@ -39,7 +39,7 @@ router.get('/api/v1/movies/upcoming', async (req, res) => {
   } = req.query;
 
   try {
-    const { fetchMoviesWithSessions, fetchMovies } = AllMoviesService(SingleMovieService());
+    const { fetchMoviesWithSessions, fetchMovies } = AllMoviesService(SingleMovieService);
 
     const fetchAllMovies = showSessions ? fetchMoviesWithSessions : fetchMovies;
 

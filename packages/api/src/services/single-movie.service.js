@@ -27,46 +27,6 @@ export default function SingleMovieService() {
   }
 
   /**
-   * Fetches the information of a movie.
-   * It assumes it is on a single movie page.
-   *
-   * @param {puppeteer.Page} page - Movie page
-   * @returns {Movie} movie - All movie data
-   */
-  async function collectMovieData(page) {
-    const movieContent = await page.$(dom.movieSingle.movieContent);
-
-    if (movieContent === null) {
-      throw Error(NOT_FOUND);
-    }
-
-    const title = await page.$(dom.movieSingle.movieTitle)
-      .then((handle) => handle.evaluate((el) => el.innerHTML))
-      .then((rawTitle) => rawTitle.toLowerCase())
-      .catch((error) => {
-        console.error(error);
-
-        return null;
-      });
-
-    const poster = await page.$(dom.movieSingle.moviePoster)
-      .then((handle) => handle.evaluate((el) => el.src))
-      .catch((error) => {
-        console.error(error);
-
-        return null;
-      });
-
-    const sessions = await this.collectSessions(page);
-
-    return {
-      title,
-      poster,
-      sessions,
-    };
-  }
-
-  /**
    * Gets the sessions from the movie page
    * @param {puppeteer.Page} page
    * @returns {Promise.<Session>}
@@ -97,6 +57,46 @@ export default function SingleMovieService() {
     }
 
     return null;
+  }
+
+  /**
+   * Fetches the information of a movie.
+   * It assumes it is on a single movie page.
+   *
+   * @param {puppeteer.Page} page - Movie page
+   * @returns {Movie} movie - All movie data
+   */
+  async function collectMovieData(page) {
+    const movieContent = await page.$(dom.movieSingle.movieContent);
+
+    if (movieContent === null) {
+      throw Error(NOT_FOUND);
+    }
+
+    const title = await page.$(dom.movieSingle.movieTitle)
+      .then((handle) => handle.evaluate((el) => el.innerHTML))
+      .then((rawTitle) => rawTitle.toLowerCase())
+      .catch((error) => {
+        console.error(error);
+
+        return null;
+      });
+
+    const poster = await page.$(dom.movieSingle.moviePoster)
+      .then((handle) => handle.evaluate((el) => el.src))
+      .catch((error) => {
+        console.error(error);
+
+        return null;
+      });
+
+    const sessions = await collectMovieSessions(page);
+
+    return {
+      title,
+      poster,
+      sessions,
+    };
   }
 
   /**

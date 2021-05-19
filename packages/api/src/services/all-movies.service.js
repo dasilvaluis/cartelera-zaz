@@ -10,6 +10,8 @@ export default function AllMoviesService(SingleMovieService) {
   dayjs.extend(utc);
   dayjs.extend(timezone);
 
+  const singleMovieService = SingleMovieService();
+
   function evaluateMovieListElement(domEl) {
     return {
       pageUrl: domEl.href,
@@ -96,7 +98,7 @@ export default function AllMoviesService(SingleMovieService) {
 
       await browserPage.goto(movie.pageUrl);
 
-      const sessions = await SingleMovieService.collectSessions(page);
+      const sessions = await singleMovieService.collectMovieSessions(page);
 
       await closePage();
 
