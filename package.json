@@ -15,12 +15,12 @@
     "test": "lerna run test --stream",
     "heroku-prebuild": "npm run setup:ci"
   },
-  "dependencies": {
-    "lerna": "4.0.0"
-  },
   "keywords": [
     "zaragoza",
     "cinema",
     "movies"
-  ]
+  ],
+  "dependencies": {
+    "lerna": "^4.0.0"
+  }
 }
