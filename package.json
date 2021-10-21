@@ -13,7 +13,7 @@
     "build": "lerna run build --stream",
     "lint": "lerna run lint --stream",
     "test": "lerna run test --stream",
-    "heroku-prebuild": "npm run setup:ci"
+    "heroku-prebuild": "npm install && npm run setup:ci"
   },
   "keywords": [
     "zaragoza",
