@@ -15,7 +15,7 @@
     "test": "lerna run test --stream",
     "heroku-prebuild": "npm run setup:ci"
   },
-  "devDependencies": {
+  "dependencies": {
     "lerna": "4.0.0"
   },
   "keywords": [
