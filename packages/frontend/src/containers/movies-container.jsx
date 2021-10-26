@@ -4,8 +4,8 @@ import { MoviesList } from '../components/MoviesList/movies-list';
 import { getMovies } from '../services/movies-service';
 
 const MOVIES_TABS = {
-  onScreen: 0,
-  upcoming: 1,
+  onScreen: 'on-screen',
+  upcoming: 'upcoming',
 };
 
 export function MoviesContainer() {

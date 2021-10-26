@@ -14,7 +14,7 @@ export async function getMovies({
   upcoming = false,
 }) {
   const moviesRoute = upcoming ? routes.upcoming : routes.onScreen;
-  const { data } = await axios.get(`${ MOVIES_API_URL }/v1${ moviesRoute }`, {
+  const { data } = await axios.get(`${ MOVIES_API_URL }${ moviesRoute }`, {
     params: { page, limit, showSessions },
   });
 
@@ -22,7 +22,7 @@ export async function getMovies({
 }
 
 export async function getMovie(movieKey) {
-  const { data } = await axios.get(`${ MOVIES_API_URL }/v1${ routes.singleMovie(movieKey) }`);
+  const { data } = await axios.get(`${ MOVIES_API_URL }${ routes.singleMovie(movieKey) }`);
 
   return data;
 }
