@@ -8,53 +8,28 @@ import { NOT_FOUND } from '../utils/error-types.js';
 
 const router = express.Router();
 
-router.get('/api/v1/movies', async (req, res) => {
-  const {
-    showSessions = false,
-    page = DEFAULT_PAGE,
-    limit = DEFAULT_PAGE_LIMIT,
-  } = req.query;
+function handleMoviesCall(archivePage) {
+  return async (req, res) => {
+    const {
+      showSessions = false,
+      page = DEFAULT_PAGE,
+      limit = DEFAULT_PAGE_LIMIT,
+    } = req.query;
 
-  try {
-    const fetchMovies = showSessions
-      ? AllMoviesService.fetchMoviesWithSessions
-      : AllMoviesService.fetchMovies;
+    try {
+      const moviesResult = await AllMoviesService.fetchMovies(
+        archivePage,
+        { page, limit, showSessions },
+      );
 
-    const moviesResult = await fetchMovies(
-      ALL_MOVIES_PAGE,
-      { page, limit },
-    );
+      res.json(moviesResult);
+    } catch (error) {
+      res.status(500).send(error.message);
+    }
+  };
+}
 
-    res.json(moviesResult);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-router.get('/api/v1/movies/upcoming', async (req, res) => {
-  const {
-    showSessions = false,
-    page = DEFAULT_PAGE,
-    limit = DEFAULT_PAGE_LIMIT,
-  } = req.query;
-
-  try {
-    const fetchMovies = showSessions
-      ? AllMoviesService.fetchMoviesWithSessions
-      : AllMoviesService.fetchMovies;
-
-    const moviesResult = await fetchMovies(
-      UPCOMING_MOVIES_PAGE,
-      { page, limit },
-    );
-
-    res.json(moviesResult);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-});
-
-router.get('/api/v1/movies/:movieId', async (req, res) => {
+async function handleSingleMovieCall(req, res) {
   try {
     const movie = await SingleMovieService.fetchMovie(req.params.movieId);
 
@@ -66,6 +41,12 @@ router.get('/api/v1/movies/:movieId', async (req, res) => {
       res.status(500).send(error.message);
     }
   }
-});
+}
+
+router.get('/api/v1/movies', handleMoviesCall(ALL_MOVIES_PAGE));
+
+router.get('/api/v1/movies/upcoming', handleMoviesCall(UPCOMING_MOVIES_PAGE));
+
+router.get('/api/v1/movies/:movieId', handleSingleMovieCall);
 
 export default router;

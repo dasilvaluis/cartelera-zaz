@@ -39,6 +39,30 @@ async function collectMoviesData(movieHandlers) {
 }
 
 /**
+ * Fetches all the sessions for the given movies list. Returns null if it fails.
+ *
+ * @param {puppeteer.Browser} browser - Browser instance
+ * @param {Array<Object>} movies - Movies list
+ */
+async function fetchMoviesSessions(browser, movies) {
+  const movieWSessionsPromises = movies.map(async (movie) => {
+    const { page: browserPage, closePage } = await openNewPage(browser);
+
+    await browserPage.goto(movie.pageUrl);
+
+    const sessions = await SingleMovieService.collectMovieSessions(browserPage);
+
+    await closePage();
+
+    return { ...movie, sessions };
+  });
+
+  const movieWSessions = await Promise.all(movieWSessionsPromises);
+
+  return movieWSessions;
+}
+
+/**
  * Fetches a list of all available movies. Returns null if it fails
  *
  * @param {String} moviesArchivePage Movies page
@@ -49,6 +73,7 @@ async function collectMoviesData(movieHandlers) {
 async function fetchMovies(moviesArchivePage, {
   limit,
   page,
+  showSessions,
 }) {
   const { browser, closeBrowser } = await startNewBrowser();
   const { page: browserPage } = await openNewPage(browser);
@@ -64,10 +89,14 @@ async function fetchMovies(moviesArchivePage, {
 
   const movies = await collectMoviesData(moviesHandlers);
 
+  const moviesToReturn = showSessions
+    ? await fetchMoviesSessions(browser, movies)
+    : movies;
+
   await closeBrowser();
 
   return {
-    content: movies,
+    content: moviesToReturn,
     pagination: {
       ...pagination,
       page,
@@ -76,41 +105,6 @@ async function fetchMovies(moviesArchivePage, {
   };
 }
 
-/**
- * Fetches a list of all available movies with sessions. Returns null if it fails.
- *
- * @param {String} moviesArchivePage Movies page
- * @param {Object} parameters Query parameters
- * @param {Number} parameters.limit Limit of results per page
- * @param {Number} parameters.page Page number
- */
-async function fetchMoviesWithSessions(moviesArchivePage, {
-  limit,
-  page,
-}) {
-  const { browser, closeBrowser } = await startNewBrowser();
-  const { content: movies, ...rest } = fetchMovies(moviesArchivePage, { limit, page });
-
-  const movieWSessionsPromises = movies.map(async (movie) => {
-    const { page: browserPage, closePage } = await openNewPage(browser);
-
-    await browserPage.goto(movie.pageUrl);
-
-    const sessions = await SingleMovieService.collectSessions(page);
-
-    await closePage();
-
-    return { ...movie, sessions };
-  });
-
-  const movieWSessions = await Promise.all(movieWSessionsPromises);
-
-  await closeBrowser();
-
-  return { content: movieWSessions, ...rest };
-}
-
 export default {
   fetchMovies,
-  fetchMoviesWithSessions,
 };

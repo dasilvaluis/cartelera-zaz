@@ -26,6 +26,37 @@ function evaluateMovieSession(domEl) {
 }
 
 /**
+ * Gets the sessions from the movie page
+ * @param {puppeteer.Page} browserPage
+ * @returns {Promise.<Session>}
+ */
+async function collectMovieSessions(browserPage) {
+  const sessionHandles = await browserPage.$$(dom.movieSingle.sessionsDetails)
+    .catch(() => null);
+
+  if (sessionHandles) {
+    const evaluateHandle = (sessionHandle) => sessionHandle.evaluate(evaluateMovieSession)
+      .then(({ hourRaw, dayRaw, ...result }) => ({
+        ...result,
+        date: dayjs.tz(`${reverseDate(dayRaw)} ${extractHour(hourRaw)}`, TIMEZONE),
+        isVos: isVOS(hourRaw),
+        isAtmos: isATMOS(hourRaw),
+      }))
+      .catch((error) => {
+        console.error(error);
+
+        return null;
+      });
+
+    const sessionsPromises = sessionHandles.map(evaluateHandle);
+
+    return Promise.all(sessionsPromises);
+  }
+
+  return null;
+}
+
+/**
  * Fetches the information of a movie.
  * It assumes it is on a single movie page.
  *
@@ -56,46 +87,13 @@ async function collectMovieData(page) {
       return null;
     });
 
-  const sessions = await this.collectSessions(page);
+  const sessions = await collectMovieSessions(page);
 
   return {
     title,
     poster,
     sessions,
   };
-}
-
-/**
- * Gets the sessions from the movie page
- * @param {puppeteer.Page} page
- * @returns {Promise.<Session>}
- */
-async function collectMovieSessions(page) {
-  const sessionHandles = await page.$$(dom.movieSingle.sessionsDetails)
-    .catch(() => null);
-
-  if (sessionHandles) {
-    const sessionsPromises = sessionHandles.map(async (sessionHandle) => {
-      const data = await sessionHandle.evaluate(evaluateMovieSession)
-        .then(({ hourRaw, dayRaw, ...result }) => ({
-          ...result,
-          date: dayjs.tz(`${reverseDate(dayRaw)} ${extractHour(hourRaw)}`, TIMEZONE),
-          isVos: isVOS(hourRaw),
-          isAtmos: isATMOS(hourRaw),
-        }))
-        .catch((error) => {
-          console.error(error);
-
-          return null;
-        });
-
-      return data;
-    });
-
-    return Promise.all(sessionsPromises);
-  }
-
-  return null;
 }
 
 /**
